@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  greeting-service:
+    image: ghcr.io/ag-qvccs/greeting-service:latest
+    networks:
+      - traefik-public
+    deploy:
+      replicas: 1
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.greeting.rule=Host(`dev.qvccs.com`) && PathPrefix(`/greet`)"
+        - "traefik.http.routers.greeting.entrypoints=websecure"
+        - "traefik.http.routers.greeting.tls.certresolver=letsencrypt"
+        - "traefik.http.services.greeting.loadbalancer.server.port=8080"
+
+networks:
+  traefik-public:
+    external: true
